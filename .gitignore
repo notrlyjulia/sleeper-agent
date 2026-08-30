@@ -1,0 +1,10 @@
+.env
+*.token
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Large, machine-generated, and safe to re-fetch
+memory/players_cache.json
