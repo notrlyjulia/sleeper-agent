@@ -28,6 +28,15 @@ yours.
 
 ## Every run
 
+0. **Sanity check before doing anything else:** pull
+   `https://api.sleeper.app/v1/state/nfl` and
+   `https://api.sleeper.app/v1/league/<league_id>/rosters` via `WebFetch`.
+   If the draft hasn't happened yet (no players on any roster) or the NFL
+   regular season hasn't started (`state.season_type` isn't `regular`),
+   there's nothing to manage yet — append a one-line note to
+   `memory/strategy_log.md` saying so, and stop. Don't attempt lineup sets,
+   waiver claims, or trade decisions against a roster that doesn't exist
+   yet.
 1. Read `memory/league_context.md` (league_id, roster_id, your Sleeper
    display name, scoring/roster settings) and `memory/strategy_log.md`
    (everything you've done and thought so far this season).
