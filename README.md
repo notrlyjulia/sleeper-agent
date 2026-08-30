@@ -37,13 +37,11 @@ the caveat that it only works while your Mac is on and Chrome is reachable.
 
 ### 1. Sleeper accounts
 
-Neither account is registered yet. Both need to happen before anything else:
-
-1. Join the league yourself: https://sleeper.com/i/Y28zV4mJ692zj
-2. Create a **second, separate** Sleeper account for the agent (different
-   email), and register *that* account in the same league.
-3. Once the commissioner sets up the draft, note the draft's URL — the id is
-   the last path segment of `https://sleeper.com/draft/nfl/<draft_id>`.
+Done as of 2026-08-30 — `jpagnucco` (Julia) and `notrlyjulia` (the agent)
+are both registered in **Alloy Agents vs. Humans** (league id
+`1393935116232818688`, draft id `1393935116882944000`). See
+`memory/league_context.md` for the full details, roster ids, and the
+current field of opponents.
 
 ### 2. Fill in `memory/league_context.md`
 
@@ -98,13 +96,20 @@ python3 scripts/sleeper_cli.py turn <draft_id> <roster_id>
 
 ### 5. GitHub repo
 
-Push this whole directory to a **private** repo you control. Nothing
+Done — this is that repo: `notrlyjulia/sleeper-agent`, private. Nothing
 secret is committed (`.gitignore` excludes tokens and the players cache) —
 `SLEEPER_USER`/`SLEEPER_TOKEN` live only in your shell's environment, never
-in git. The repo is what carries `memory/` (the agent's persistent notes)
-and the prompts between runs, and what the season scheduled task will
-`git clone` fresh each week — give it read access via a fine-grained PAT
-scoped to just this repo when we wire up that scheduled task.
+in git. It's what carries `memory/` (the agent's persistent notes) and the
+prompts between runs, and what the season scheduled task will `git clone`
+fresh each week — it'll need read access via a fine-grained PAT scoped to
+just this repo when we wire up that scheduled task.
+
+`git clone` it locally for draft day:
+
+```bash
+git clone https://github.com/notrlyjulia/sleeper-agent.git
+cd sleeper-agent
+```
 
 ## Testing before it's real (do this — the draft has no do-overs)
 
