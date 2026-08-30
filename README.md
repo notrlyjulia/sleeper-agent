@@ -129,8 +129,47 @@ Start a **mock draft** on Sleeper (no league needed) well before Sep 4:
    stress test, per the upstream README), posts/reads chat if it chooses
    to, and writes real reasoning to `memory/strategy_log.md`.
 
+## Known issue from mock-draft testing (2026-08-30)
+
+The first full mock draft (draft_id `1399842036722446336`, all 15 rounds,
+slot 9) succeeded end-to-end — join, turn detection, picks, chat, and
+`strategy_log.md` logging all worked. Two things came up along the way,
+both already logged in `memory/strategy_log.md`, but worth having here too
+in case that session/environment is gone before draft day:
+
+1. **`join_draft` can get blocked by a Sleeper UI element.** Sleeper's own
+   "Try new draftboard" promo banner (a `<span class="beta-chip">`) can sit
+   on top of the CLAIM button and intercept Playwright's click, throwing
+   `TimeoutError: ElementHandle.click: Timeout 30000ms exceeded`. Dismissing
+   the banner in a *different* browser session/profile does **not** fix
+   this — the library launches its own separate browser profile, so the
+   dismissed-state doesn't carry over. `force=True` on the click also
+   doesn't help, since it still clicks at real screen coordinates and can
+   still land on the banner instead of the button underneath.
+
+   **Fix applied:** patched the installed library at
+   `.venv/lib/python3.9/site-packages/sleeperdraft/seat.py` to neutralize
+   the overlay (`pointer-events: none` via `page.evaluate`, or remove the
+   node) *before* the normal (non-force) click on `.claim-text`.
+
+   **This patch is local-only** — it lives in `.venv/`, which is
+   gitignored, so it is **not** in this repo and will **not** survive a
+   venv rebuild (`rm -rf .venv` + reinstall). If the venv gets recreated
+   before Sep 4, re-check whether this overlay is still an issue and
+   reapply the fix if so — don't assume it's already handled. Worth
+   flagging upstream to `aWarmWalrus/sleeperdraft` (Charles Qian — who is
+   also `awarmwalrus` in this league) at some point, since it'll hit
+   anyone else driving a live Sleeper draft room with this library.
+
+2. **DST picks need the full team name, not the nickname.** `submit_pick`
+   failed when passed just "Ravens" — use "Baltimore Ravens" (the full
+   name) for defense/special-teams picks.
+
 ## Draft day runbook (2026-09-04, 4:00 PM ET)
 
+0. **Pre-flight:** if you rebuilt `.venv` at any point since 2026-08-30,
+   re-read the "Known issue from mock-draft testing" section above before
+   starting — the `join_draft` overlay patch may need reapplying.
 1. Terminal open, in this directory, venv activated, `SLEEPER_USER` /
    `SLEEPER_TOKEN` exported for the *agent's* account.
 2. Start `claude`, paste in `prompts/draft_day_prompt.md` as the first
