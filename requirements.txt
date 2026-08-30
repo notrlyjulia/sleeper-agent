@@ -1,0 +1,10 @@
+# Charles Qian's draft-room plumbing library (reads: plain HTTP; writes: Playwright).
+# See https://github.com/aWarmWalrus/sleeperdraft for the full README —
+# it documents the DOM traps this library exists to route around.
+git+https://github.com/aWarmWalrus/sleeperdraft.git
+
+# Only needed for the write half (join/pick/chat/autopick). Reads work with
+# no browser at all. The cloud workspace already has Chromium preinstalled
+# at /opt/pw-browsers, so `playwright install` is NOT needed there — only
+# on a machine that doesn't have it (e.g. a bare local Mac/server).
+playwright>=1.40
